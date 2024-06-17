@@ -28,10 +28,10 @@ class ListViewModel: ObservableObject {
     func getItems() {
         guard 
             let data = UserDefaults.standard.data(forKey: itemsKey),
-            let savedItems = try? JSONDecoder().decode([ItemModel].self, from: data)
+            let _ = try? JSONDecoder().decode([ItemModel].self, from: data)
         else {
             return
-        }
+            }
     }
     
     func deleteItems(at indexSet: IndexSet) {
