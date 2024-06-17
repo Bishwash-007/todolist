@@ -1,4 +1,3 @@
-//
 //  ListView.swift
 //  todolist
 //
@@ -8,21 +7,23 @@
 import SwiftUI
 
 struct ListView: View {
-    @State var items: [ItemModel] = [
-        ItemModel(title: "this is the first title", iscompleted: false),
-        ItemModel(title: "this is the second title", iscompleted: true),
-        ItemModel(title: "this is the Third title", iscompleted: false)
-    ]
+    @EnvironmentObject var listViewModel: ListViewModel
+    
     var body: some View {
-        List{
-            ForEach(items) { item in
+        List {
+            ForEach(listViewModel.items) { item in
                 ListRowView(item: item)
+                    .onTapGesture {
+                        withAnimation(.linear){
+                            listViewModel.updateItem(item: item)
+                        }
+                    }
             }
-            .onDelete(perform: deleteItems)
-            .onMove(perform: moveItems)
+            .onDelete(perform: listViewModel.deleteItems)
+            .onMove(perform: listViewModel.moveItems)
         }
         .listStyle(PlainListStyle())
-        .navigationTitle("Todo List ")
+        .navigationTitle("Todo List")
         .navigationBarItems(
             leading: EditButton(),
             trailing: NavigationLink("Add", destination: {
@@ -30,18 +31,11 @@ struct ListView: View {
             })
         )
     }
-    
-    func deleteItems(indexSet : IndexSet){
-        items.remove(atOffsets: indexSet)
-    }
-    
-    func moveItems(from : IndexSet, to : Int){
-        items.move(fromOffsets: from, toOffset: to)
-    }
 }
 
 #Preview {
-    NavigationView{
+    NavigationView {
         ListView()
     }
+    .environmentObject(ListViewModel())
 }
